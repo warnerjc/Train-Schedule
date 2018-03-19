@@ -1,0 +1,13 @@
+html, body {
+    background-image: url("../images/subway-lines.png");
+}
+
+header {
+    text-align: center;
+    font-size: 3em;
+    color: #fd490c;
+    background-color: white;
+    opacity: 1.0;
+    border-bottom: 5px solid #fd490c;
+    margin-bottom: 20px;
+}
