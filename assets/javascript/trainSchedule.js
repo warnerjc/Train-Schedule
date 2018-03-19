@@ -16,21 +16,42 @@ $(document).ready( function() {
     // Get reference to Firebase Application Database
     var database = firebase.database();
 
-    displayTrains();
-
     // Function to retreive real time train schedule from Firebase Application Database
     // Display train schedule in HTML
-    function displayTrains() {
+    database.ref("/trains").on("child_added", function(snapshot) {
 
-        $("#train-schedule").empty();
+        // Then we console.log the value of snapshot
+        console.log(snapshot.val());
 
-        console.log(database);
+        var newTrain = $("<tr>");
+        var trainName = $("<td>");
+        var trainDestination = $("<td>");
+        var trainFrequency = $("<td>");
+        var trainArrival = $("<td>");
+        var trainMinAway = $("<td>");
 
-        // for loop running through database
-        // pass database object to addTrainHTML
+        trainName.text(snapshot.val().name);
+        trainDestination.text(snapshot.val().destination);
+        trainFrequency.text(snapshot.val().trainInterval);
+        
+        // Use moment.js for trainArrival   
+        // Use moment.js for trainMinAway
 
+        newTrain.append(trainName);
+        newTrain.append(trainDestination);
+        newTrain.append(trainFrequency);
+        newTrain.append(trainArrival);
+        newTrain.append(trainMinAway);
 
-    };
+        $(".train-schedules").append(newTrain);
+
+    // If there is an error that Firebase runs into -- it will be stored in the "errorObject"
+    // Again we could have named errorObject anything we wanted.
+    }, function(errorObject) {
+
+        // In case of error this will print the error
+        console.log("The read failed: " + errorObject.code);
+    });
 
     // On click event listener for adding train to schedule
     // "#save-train" from modal
@@ -49,44 +70,11 @@ $(document).ready( function() {
         $("#first-train").val("");
         $("#frequency-time").val("");
 
-        // Check that on click event listener retreiving information
+        // New Train prior to sending to Firebase Application Database
         console.log( myTrain );
-
-        addTrainHTML( myTrain );
         
-        database.ref().push( myTrain );
+        database.ref("/trains").push( myTrain );
 
     });
-
-    // Function for adding new trains
-    function addTrain( getTrain ) {
-
-        var newTrain = $("<tr>");
-        var trainName = $("<td>");
-        var trainDestination = $("<td>");
-        var trainFrequency = $("<td>");
-        var trainArrival = $("<td>");
-        var trainMinAway = $("<td>");
-
-        trainName.text(getTrain.name);
-        trainDestination.text(getTrain.destination);
-        trainFrequency.text(getTrain.trainInterval);
-        
-        // Use moment.js for trainArrival
-
-        // Use moment.js for trainMinAway
-
-        newTrain.append(trainName);
-        newTrain.append(trainDestination);
-        newTrain.append(trainFrequency);
-        newTrain.append(trainArrival);
-        newTrain.append(trainMinAway);
-
-        $(".train-schedules").append(newTrain);
-
-    };
-
-    // Function for adding new train to Firebase Application Database
-
 
 });
