@@ -37,6 +37,18 @@ $(document).ready( function() {
         // Use moment.js for trainArrival   
         // Use moment.js for trainMinAway
 
+        var firstTime = snapshot.val().startTime;
+        var tFrequency = snapshot.val().trainInterval;
+    
+        var firstTimeConverted = moment(firstTime, "HH:mm").subtract(1, "years");
+        var diffTime = moment().diff(moment(firstTimeConverted), "minutes");
+        var tRemainder = diffTime % tFrequency;
+        var minTillTrain = tFrequency - tRemainder;
+        var nextTrain = moment().add(minTillTrain, "minutes").format("LT");
+
+        trainArrival.text(nextTrain);
+        trainMinAway.text(minTillTrain);
+
         newTrain.append(trainName);
         newTrain.append(trainDestination);
         newTrain.append(trainFrequency);
